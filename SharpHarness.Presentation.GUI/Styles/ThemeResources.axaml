@@ -1,0 +1,107 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="CanvasBrush" Color="#070A10" />
+    <SolidColorBrush x:Key="HeaderBrush" Color="#0A0E15" />
+    <SolidColorBrush x:Key="PanelBrush" Color="#0B1017" />
+    <SolidColorBrush x:Key="CenterBrush" Color="#080C12" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#101720" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="#0D131C" />
+    <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#162030" />
+    <SolidColorBrush x:Key="SelectionBrush" Color="#16243B" />
+    <SolidColorBrush x:Key="BorderBrush" Color="#1C2633" />
+    <SolidColorBrush x:Key="BorderStrongBrush" Color="#2A384B" />
+    <SolidColorBrush x:Key="DividerBrush" Color="#151F2B" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#E7EDF6" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#9DABBE" />
+    <SolidColorBrush x:Key="TextMutedBrush" Color="#627187" />
+    <SolidColorBrush x:Key="TextFaintBrush" Color="#465466" />
+
+    <SolidColorBrush x:Key="AccentBrush" Color="#5B8CFF" />
+    <SolidColorBrush x:Key="AccentBrightBrush" Color="#85A9FF" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#16233D" />
+    <SolidColorBrush x:Key="AccentSurfaceBrush" Color="#101B2E" />
+    <SolidColorBrush x:Key="PrimaryButtonBrush" Color="#3D6FE8" />
+    <SolidColorBrush x:Key="SuccessBrush" Color="#45C05A" />
+    <SolidColorBrush x:Key="SuccessBrightBrush" Color="#7EE787" />
+    <SolidColorBrush x:Key="SuccessSoftBrush" Color="#10261A" />
+    <SolidColorBrush x:Key="WarningBrush" Color="#E3B341" />
+    <SolidColorBrush x:Key="WarningBrightBrush" Color="#F2CC60" />
+    <SolidColorBrush x:Key="WarningSoftBrush" Color="#292110" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#F85149" />
+    <SolidColorBrush x:Key="DangerBrightBrush" Color="#FF9A93" />
+    <SolidColorBrush x:Key="DangerSoftBrush" Color="#2B1518" />
+    <SolidColorBrush x:Key="AddedLineBrush" Color="#0C2316" />
+    <SolidColorBrush x:Key="RemovedLineBrush" Color="#291316" />
+    <SolidColorBrush x:Key="HunkHeaderBrush" Color="#0C141F" />
+    <SolidColorBrush x:Key="CodeBackgroundBrush" Color="#060A0F" />
+    <SolidColorBrush x:Key="TerminalBackgroundBrush" Color="#04070B" />
+
+    <FontFamily x:Key="MonoFont">Consolas</FontFamily>
+
+    <Color x:Key="SystemAccentColor">#5B8CFF</Color>
+    <Color x:Key="SystemAccentColorLight1">#7DA5FF</Color>
+    <Color x:Key="SystemAccentColorLight2">#9DBBFF</Color>
+    <Color x:Key="SystemAccentColorLight3">#BDD1FF</Color>
+    <Color x:Key="SystemAccentColorDark1">#4979E6</Color>
+    <Color x:Key="SystemAccentColorDark2">#3766CC</Color>
+    <Color x:Key="SystemAccentColorDark3">#2653B3</Color>
+
+    <StreamGeometry x:Key="IconTerminal">M4 5 H20 V19 H4 Z M7.5 9 L10.5 12 L7.5 15 M12.5 15 H16.5</StreamGeometry>
+    <StreamGeometry x:Key="IconBranch">M6 2 A3 3 0 1 0 6 8 A3 3 0 1 0 6 2 M6 8 V11 C6 16 18 11 18 14 M18 14 A3 3 0 1 0 18 20 A3 3 0 1 0 18 14</StreamGeometry>
+    <StreamGeometry x:Key="IconFile">M6 3 H14 L19 8 V21 H6 Z M14 3 V8 H19</StreamGeometry>
+    <StreamGeometry x:Key="IconCheck">M5 12.5 L10 17.5 L19 7.5</StreamGeometry>
+    <StreamGeometry x:Key="IconX">M6 6 L18 18 M18 6 L6 18</StreamGeometry>
+    <StreamGeometry x:Key="IconSend">M4 12 L20 4 L14 20 L11 13 Z M11 13 L20 4</StreamGeometry>
+    <StreamGeometry x:Key="IconShield">M12 3 L20 6 V12 C20 17 16 20 12 21 C8 20 4 17 4 12 V6 Z</StreamGeometry>
+    <StreamGeometry x:Key="IconCode">M8 7 L3 12 L8 17 M16 7 L21 12 L16 17</StreamGeometry>
+    <StreamGeometry x:Key="IconSparkle">M12 3 L13.6 8.4 L19 10 L13.6 11.6 L12 17 L10.4 11.6 L5 10 L10.4 8.4 Z M18.5 15.5 L19.1 17.4 L21 18 L19.1 18.6 L18.5 20.5 L17.9 18.6 L16 18 L17.9 17.4 Z</StreamGeometry>
+    <StreamGeometry x:Key="IconChevronDown">M5 8.5 L12 15.5 L19 8.5</StreamGeometry>
+    <StreamGeometry x:Key="IconChevronUp">M5 15.5 L12 8.5 L19 15.5</StreamGeometry>
+    <StreamGeometry x:Key="IconChevronRight">M9 5 L16 12 L9 19</StreamGeometry>
+    <StreamGeometry x:Key="IconStopSquare">M7 7 H17 V17 H7 Z</StreamGeometry>
+
+    <ControlTheme x:Key="CockpitButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="10,5" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="FontSize" Value="11.5" />
+        <Setter Property="FontWeight" Value="500" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Root"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="Opacity" Value="0.86" />
+        </Style>
+        <Style Selector="^:pressed">
+            <Setter Property="Opacity" Value="0.7" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.4" />
+        </Style>
+        <Style Selector="^:focus-visible /template/ Border#PART_Root">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

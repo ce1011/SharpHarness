@@ -1,22 +1,771 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:SharpHarness.Presentation.GUI.ViewModels"
+        xmlns:models="using:SharpHarness.Presentation.GUI.Models"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
+        d:DesignWidth="1440"
+        d:DesignHeight="900"
         x:Class="SharpHarness.Presentation.GUI.Views.MainWindow"
         x:DataType="vm:MainViewModel"
+        x:CompileBindings="True"
         Icon="/Assets/avalonia-logo.ico"
-        Title="SharpHarness.Presentation.GUI">
+        Title="SharpHarness"
+        Width="1440"
+        Height="900"
+        MinWidth="1160"
+        MinHeight="720"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource CanvasBrush}"
+        FontFamily="Inter"
+        RequestedThemeVariant="Dark">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <Grid RowDefinitions="56,*,Auto">
 
+        <!-- Header -->
+        <Border Grid.Row="0"
+                Background="{DynamicResource HeaderBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="14,0">
+
+                <StackPanel Orientation="Horizontal"
+                            Spacing="10"
+                            VerticalAlignment="Center">
+                    <Border Width="27"
+                            Height="27"
+                            CornerRadius="7"
+                            Background="{DynamicResource AccentSoftBrush}"
+                            BorderBrush="#2A4069"
+                            BorderThickness="1">
+                        <Path Classes="icon accent"
+                              Data="{StaticResource IconTerminal}"
+                              Width="15"
+                              Height="15" />
+                    </Border>
+
+                    <TextBlock Text="SharpHarness" FontSize="14" FontWeight="SemiBold" />
+
+                    <Border Classes="vdivider" Height="22" Margin="2,0" />
+
+                    <StackPanel Spacing="1" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Path Classes="icon sm muted"
+                                  Data="{StaticResource IconBranch}"
+                                  Width="10"
+                                  Height="10" />
+                            <TextBlock Text="{Binding BranchName}"
+                                       Classes="dim"
+                                       FontSize="10" />
+                            <TextBlock Text="·" Classes="faint" FontSize="10" />
+                            <TextBlock Text="{Binding CommitHash}"
+                                       Classes="mono-sm faint"
+                                       FontSize="9" />
+                        </StackPanel>
+                        <Border Classes="tag"
+                                HorizontalAlignment="Left"
+                                Padding="4,0"
+                                Margin="0,1,0,0">
+                            <TextBlock Text="POC" Classes="faint" FontSize="7.5" />
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            Spacing="10"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="MODEL"
+                               Classes="section"
+                               FontSize="8.5"
+                               VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding ModelOptions}"
+                              SelectedItem="{Binding SelectedModel, Mode=TwoWay}"
+                              Width="158"
+                              Height="28" />
+
+                    <Border Classes="vdivider" Height="20" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Text="tokens" Classes="faint" FontSize="9" />
+                        <TextBlock Text="{Binding TokenUsage}" Classes="mono-sm muted" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Text="cost" Classes="faint" FontSize="9" />
+                        <TextBlock Text="{Binding Cost}" Classes="mono-sm muted" />
+                    </StackPanel>
+
+                    <Border Classes="pill warning" Padding="8,4">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <Border Classes="statusDot warning" />
+                            <TextBlock Text="{Binding Status}"
+                                       Classes="warning"
+                                       FontSize="9.5" />
+                        </StackPanel>
+                    </Border>
+
+                    <Button Theme="{StaticResource CockpitButton}"
+                            Classes="danger small"
+                            ToolTip.Tip="Stop the agent">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <Path Classes="icon sm danger"
+                                  Data="{StaticResource IconStopSquare}"
+                                  Width="9"
+                                  Height="9" />
+                            <TextBlock Text="Stop" FontSize="10" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main cockpit -->
+        <Grid Grid.Row="1" ColumnDefinitions="230,*,400">
+
+            <!-- Context -->
+            <Border Grid.Column="0"
+                    Background="{DynamicResource PanelBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="0,0,1,0">
+                <Grid RowDefinitions="36,*">
+                    <Border BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="12,0">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="CONTEXT"
+                                       Classes="section"
+                                       FontSize="9.5"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="POC"
+                                       Classes="mono-sm faint"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="12,11,10,14" Spacing="17">
+
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="TASKS" Classes="section" FontSize="8.5" />
+                                <ItemsControl ItemsSource="{Binding Tasks}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:TaskItem">
+                                            <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,9">
+                                                <Border Classes="statusDot"
+                                                        Classes.running="{Binding IsActive}"
+                                                        Classes.idle="{Binding IsQueued}"
+                                                        Margin="0,4,8,0" />
+                                                <StackPanel Grid.Column="1" Spacing="1">
+                                                    <TextBlock Text="{Binding Title}"
+                                                               FontSize="11"
+                                                               FontWeight="Medium"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding Meta}"
+                                                               Classes="dim"
+                                                               FontSize="9" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="CONTEXT" Classes="section" FontSize="8.5" />
+                                <ItemsControl ItemsSource="{Binding ContextItems}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:ContextItem">
+                                            <Grid ColumnDefinitions="Auto,*,Auto"
+                                                  Margin="0,0,0,7">
+                                                <Path Classes="icon sm muted"
+                                                      Data="{StaticResource IconFile}"
+                                                      Width="11"
+                                                      Height="11"
+                                                      VerticalAlignment="Center" />
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Name}"
+                                                           Classes="mono"
+                                                           FontSize="9.5"
+                                                           Margin="7,0,4,0"
+                                                           VerticalAlignment="Center"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <Border Grid.Column="2"
+                                                        Classes="tag"
+                                                        Padding="4,0">
+                                                    <TextBlock Text="{Binding Kind}"
+                                                               Classes="faint"
+                                                               FontSize="7.5" />
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="TOOLS" Classes="section" FontSize="8.5" />
+                                <Border Classes="card" Padding="8,5">
+                                    <ItemsControl ItemsSource="{Binding Tools}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="models:ToolItem">
+                                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                                      Margin="0,3">
+                                                    <Border Classes="statusDot"
+                                                            Classes.running="{Binding IsHealthy}" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Name}"
+                                                               FontSize="10.5"
+                                                               Margin="7,0,0,0" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding State}"
+                                                               Classes="faint"
+                                                               FontSize="8.5" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Agent -->
+            <Border Grid.Column="1" Background="{DynamicResource CenterBrush}">
+                <Grid RowDefinitions="36,*,Auto,Auto">
+
+                    <Border Grid.Row="0"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="13,0">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="7"
+                                        VerticalAlignment="Center">
+                                <Border Classes="statusDot warning" />
+                                <TextBlock Text="AGENT SESSION"
+                                           Classes="section"
+                                           FontSize="9.5" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="1"
+                                       Classes="mono-sm faint"
+                                       FontSize="9">
+                                <Run Text="{Binding RunLabel}" />
+                                <Run Text=" · " />
+                                <Run Text="{Binding Elapsed}" />
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="14,13,14,8" Spacing="11">
+
+                            <Border Background="{DynamicResource AccentSurfaceBrush}"
+                                    BorderBrush="#263A5A"
+                                    BorderThickness="1"
+                                    CornerRadius="7"
+                                    Padding="11,9">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="YOU"
+                                               Classes="section"
+                                               Foreground="{DynamicResource AccentBrightBrush}" />
+                                    <TextBlock Text="Build a simple cockpit POC. Keep the three-panel shell and the verification drawer."
+                                               FontSize="12"
+                                               LineHeight="18"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Classes="card" Padding="10,8">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <Path Classes="icon sm violet"
+                                          Data="{StaticResource IconSparkle}"
+                                          Width="12"
+                                          Height="12"
+                                          VerticalAlignment="Top"
+                                          Margin="0,1,0,0" />
+                                    <StackPanel Grid.Column="1"
+                                                Spacing="2"
+                                                Margin="8,0,6,0">
+                                        <TextBlock Text="Reasoning · 6s"
+                                                   Classes="dim"
+                                                   FontSize="9.5" />
+                                        <TextBlock Text="Keeping the layout flat: three panels, one approval gate, and a drawer."
+                                                   Classes="muted"
+                                                   FontSize="10.5"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                    <Path Grid.Column="2"
+                                          Classes="icon sm faint"
+                                          Data="{StaticResource IconChevronRight}"
+                                          Width="10"
+                                          Height="10"
+                                          VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+
+                            <Border Classes="card" Padding="10,8">
+                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                    <Path Classes="icon sm muted"
+                                          Data="{StaticResource IconCode}"
+                                          Width="12"
+                                          Height="12"
+                                          VerticalAlignment="Center" />
+                                    <StackPanel Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                Spacing="5"
+                                                Margin="8,0,6,0">
+                                        <TextBlock Text="apply_patch"
+                                                   Classes="mono accent"
+                                                   FontSize="10.5" />
+                                        <TextBlock Text="Views/MainWindow.axaml"
+                                                   Classes="mono-sm dim"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2"
+                                                Orientation="Horizontal"
+                                                Spacing="6">
+                                        <Path Classes="icon sm success"
+                                              Data="{StaticResource IconCheck}"
+                                              Width="10"
+                                              Height="10" />
+                                        <TextBlock Text="+64 −12"
+                                                   Classes="mono-sm success"
+                                                   FontSize="9" />
+                                        <TextBlock Text="1.2s"
+                                                   Classes="mono-sm faint"
+                                                   FontSize="9" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Border Classes="card" Background="{DynamicResource SurfaceAltBrush}" Padding="11,9">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="AGENT"
+                                               Classes="section"
+                                               Foreground="{DynamicResource AccentBrightBrush}" />
+                                    <TextBlock Text="The POC shell is in place. Approve the build and I’ll verify the layout."
+                                               FontSize="11.5"
+                                               LineHeight="18"
+                                               TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Border Grid.Row="2"
+                            Background="{DynamicResource WarningSoftBrush}"
+                            BorderBrush="#58491F"
+                            BorderThickness="1"
+                            CornerRadius="7"
+                            Margin="14,0,14,9"
+                            Padding="10,8">
+                        <StackPanel Spacing="7">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Path Classes="icon warning"
+                                      Data="{StaticResource IconShield}"
+                                      Width="14"
+                                      Height="14"
+                                      VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1"
+                                            Spacing="1"
+                                            Margin="8,0,6,0"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="APPROVAL REQUIRED"
+                                               Classes="section"
+                                               Foreground="{DynamicResource WarningBrush}" />
+                                    <TextBlock Text="Run the build to verify these changes?"
+                                               FontSize="11" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2"
+                                            Orientation="Horizontal"
+                                            Spacing="5">
+                                    <Button Theme="{StaticResource CockpitButton}"
+                                            Classes="ghost small">
+                                        <TextBlock Text="Deny" FontSize="10" />
+                                    </Button>
+                                    <Button Theme="{StaticResource CockpitButton}"
+                                            Classes="success small">
+                                        <TextBlock Text="Approve" FontSize="10" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+
+                            <Border Classes="inset"
+                                    Background="#0B0F15"
+                                    BorderBrush="#332D1D"
+                                    Padding="7,4">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <TextBlock Text="$" Classes="mono-sm success" />
+                                    <TextBlock Text="dotnet build SharpHarness.slnx"
+                                               Classes="mono-sm"
+                                               FontSize="10" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="3"
+                            Background="{DynamicResource SurfaceBrush}"
+                            BorderBrush="{DynamicResource BorderStrongBrush}"
+                            BorderThickness="1"
+                            CornerRadius="7"
+                            Margin="14,0,14,12"
+                            Padding="9,5">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox Classes="composer"
+                                     Watermark="Ask the agent to change something…" />
+                            <Button Grid.Column="1"
+                                    Theme="{StaticResource CockpitButton}"
+                                    Classes="primary"
+                                    Padding="10,5">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <Path Classes="icon sm"
+                                          Data="{StaticResource IconSend}"
+                                          Width="10"
+                                          Height="10" />
+                                    <TextBlock Text="Send" FontSize="10" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Changes -->
+            <Border Grid.Column="2"
+                    Background="{DynamicResource PanelBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}"
+                    BorderThickness="1,0,0,0">
+                <Grid RowDefinitions="36,Auto,Auto,*">
+
+                    <Border Grid.Row="0"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="12,0">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="7"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="CHANGES"
+                                           Classes="section"
+                                           FontSize="9.5" />
+                                <Border Classes="pill" Padding="6,1">
+                                    <TextBlock Text="{Binding ChangedFileCount}"
+                                               Classes="dim"
+                                               FontSize="8.5" />
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        Spacing="6"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="{Binding TotalAdded}"
+                                           Classes="mono-sm success"
+                                           FontSize="9" />
+                                <TextBlock Text="{Binding TotalRemoved}"
+                                           Classes="mono-sm danger"
+                                           FontSize="9" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ItemsControl Grid.Row="1"
+                                  ItemsSource="{Binding Files}"
+                                  Margin="6,5,6,4">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:ChangedFileInfo">
+                                <Border Classes="fileRow"
+                                        Classes.selected="{Binding IsSelected}"
+                                        Margin="0,0,0,1">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                                        <Border Classes="fileStatus"
+                                                Classes.added="{Binding IsAddedFile}">
+                                            <TextBlock Text="{Binding StatusLetter}"
+                                                       Classes="fileStatusText" />
+                                        </Border>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Path}"
+                                                   Classes="mono"
+                                                   FontSize="9.5"
+                                                   Margin="7,0,5,0"
+                                                   VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding AddedText}"
+                                                   Classes="mono-sm success"
+                                                   FontSize="8.5"
+                                                   Margin="0,0,5,0"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="3"
+                                                   Text="{Binding RemovedText}"
+                                                   Classes="mono-sm danger"
+                                                   FontSize="8.5"
+                                                   MinWidth="22"
+                                                   TextAlignment="Right"
+                                                   VerticalAlignment="Center"
+                                                   IsVisible="{Binding HasRemoved}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border Grid.Row="2"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,1,0,1"
+                            Padding="12,7">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Path Classes="icon sm muted"
+                                  Data="{StaticResource IconFile}"
+                                  Width="11"
+                                  Height="11"
+                                  VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        Spacing="6"
+                                        Margin="6,0,0,0">
+                                <TextBlock Text="{Binding SelectedFile.Path}"
+                                           Classes="mono"
+                                           FontSize="9.5"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding SelectedFile.AddedText}"
+                                           Classes="mono-sm success"
+                                           FontSize="8.5" />
+                                <TextBlock Text="{Binding SelectedFile.RemovedText}"
+                                           Classes="mono-sm danger"
+                                           FontSize="8.5" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="2"
+                                       Text="Unified"
+                                       Classes="mono-sm faint"
+                                       FontSize="8" />
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="3"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Border Background="{DynamicResource HunkHeaderBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="0,0,0,1"
+                                    Padding="9,4">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="@@ -20,5 +20,9 @@"
+                                               Classes="mono-sm dim"
+                                               FontSize="9"
+                                               VerticalAlignment="Center" />
+                                    <StackPanel Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                Spacing="2">
+                                        <Button Theme="{StaticResource CockpitButton}"
+                                                Classes="ghost small"
+                                                ToolTip.Tip="Accept this hunk">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <Path Classes="icon sm success"
+                                                      Data="{StaticResource IconCheck}"
+                                                      Width="8"
+                                                      Height="8" />
+                                                <TextBlock Text="Accept" FontSize="9" />
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Theme="{StaticResource CockpitButton}"
+                                                Classes="ghost small"
+                                                ToolTip.Tip="Reject this hunk">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <Path Classes="icon sm danger"
+                                                      Data="{StaticResource IconX}"
+                                                      Width="8"
+                                                      Height="8" />
+                                                <TextBlock Text="Reject" FontSize="9" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <ItemsControl ItemsSource="{Binding DiffLines}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:DiffLineInfo">
+                                        <Border Classes="diffLine"
+                                                Classes.added="{Binding IsAdded}"
+                                                Classes.removed="{Binding IsRemoved}">
+                                            <Grid ColumnDefinitions="36,15,*">
+                                                <TextBlock Text="{Binding Number}"
+                                                           Classes="mono-sm faint"
+                                                           FontSize="8.5"
+                                                           HorizontalAlignment="Right"
+                                                           Margin="0,0,5,0"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding Sign}"
+                                                           Classes="diffSign"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock Grid.Column="2"
+                                                           Text="{Binding Text}"
+                                                           Classes="diffText"
+                                                           VerticalAlignment="Center"
+                                                           Margin="2,0,12,0" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Verification drawer -->
+        <Border x:Name="VerificationDrawer"
+                Grid.Row="2"
+                Height="220"
+                Background="{DynamicResource PanelBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,1,0,0"
+                ClipToBounds="True">
+            <Grid RowDefinitions="34,*">
+
+                <Border Background="{DynamicResource SurfaceAltBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="0,0,0,1"
+                        Padding="12,0">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="7"
+                                    VerticalAlignment="Center">
+                            <Path Classes="icon accent"
+                                  Data="{StaticResource IconTerminal}"
+                                  Width="13"
+                                  Height="13" />
+                            <TextBlock Text="VERIFICATION"
+                                       Classes="section"
+                                       FontSize="9" />
+                            <Border Classes="pill success" Padding="6,1">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <Border Classes="statusDot running" />
+                                    <TextBlock Text="Build passed"
+                                               Classes="success"
+                                               FontSize="8.5" />
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="18 tests · 0 failed · 4.1s"
+                                       Classes="faint"
+                                       FontSize="9" />
+                        </StackPanel>
+
+                        <Button Grid.Column="2"
+                                Theme="{StaticResource CockpitButton}"
+                                Classes="icon"
+                                Width="24"
+                                Height="24"
+                                MinHeight="24"
+                                Click="OnToggleDrawerClick"
+                                ToolTip.Tip="Toggle verification drawer">
+                            <Grid>
+                                <Path x:Name="CollapseChevron"
+                                      Classes="icon sm muted"
+                                      Data="{StaticResource IconChevronDown}"
+                                      Width="12"
+                                      Height="12" />
+                                <Path x:Name="ExpandChevron"
+                                      Classes="icon sm muted"
+                                      Data="{StaticResource IconChevronUp}"
+                                      Width="12"
+                                      Height="12"
+                                      IsVisible="False" />
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <TabControl x:Name="DrawerContent" Grid.Row="1">
+                    <TabItem Header="Terminal">
+                        <ScrollViewer Background="{DynamicResource TerminalBackgroundBrush}"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="14,8" Spacing="2">
+                                <TextBlock Classes="mono" LineHeight="17">
+                                    <Run Text="$ " Foreground="{DynamicResource SuccessBrush}" />
+                                    <Run Text="dotnet build SharpHarness.slnx"
+                                         Foreground="{DynamicResource TextPrimaryBrush}" />
+                                </TextBlock>
+                                <TextBlock Text="  Determining projects to restore..."
+                                           Classes="mono-sm"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"
+                                           FontSize="10" />
+                                <TextBlock Text="  All projects are up-to-date for restore."
+                                           Classes="mono-sm"
+                                           Foreground="{DynamicResource TextSecondaryBrush}"
+                                           FontSize="10" />
+                                <TextBlock Text="Build succeeded."
+                                           Classes="mono-sm success"
+                                           FontSize="10"
+                                           Margin="0,3,0,0" />
+                                <TextBlock Text="    0 Warning(s) · 0 Error(s)"
+                                           Classes="mono-sm"
+                                           Foreground="{DynamicResource TextMutedBrush}"
+                                           FontSize="10" />
+                                <TextBlock Classes="mono" LineHeight="17" Margin="0,3,0,0">
+                                    <Run Text="$ " Foreground="{DynamicResource SuccessBrush}" />
+                                    <Run Text="▌" Foreground="{DynamicResource AccentBrightBrush}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="Tests">
+                        <ScrollViewer>
+                            <StackPanel Margin="13,7" Spacing="2">
+                                <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,3">
+                                    <TextBlock Text="18 passed · 0 failed"
+                                               Classes="success"
+                                               FontSize="10" />
+                                    <TextBlock Grid.Column="1"
+                                               Text="4.1s"
+                                               Classes="mono-sm faint"
+                                               FontSize="9" />
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding Tests}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:TestResultInfo">
+                                            <Border BorderBrush="{DynamicResource DividerBrush}"
+                                                    BorderThickness="0,0,0,1"
+                                                    Padding="0,5">
+                                                <Grid ColumnDefinitions="Auto,*,Auto">
+                                                    <Path Classes="icon sm success"
+                                                          Data="{StaticResource IconCheck}"
+                                                          Width="9"
+                                                          Height="9" />
+                                                    <TextBlock Grid.Column="1"
+                                                               Text="{Binding Name}"
+                                                               FontSize="10.5"
+                                                               Margin="7,0,0,0" />
+                                                    <TextBlock Grid.Column="2"
+                                                               Text="{Binding Duration}"
+                                                               Classes="mono-sm faint"
+                                                               FontSize="9" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>
